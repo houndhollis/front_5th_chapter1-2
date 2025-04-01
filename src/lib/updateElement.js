@@ -1,12 +1,12 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
+import { normalizeEventName } from "../utils/eventUtils.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
   for (const [attr, value] of Object.entries(originNewProps)) {
     if (originOldProps[attr] !== originNewProps[attr]) {
       if (attr.startsWith("on")) {
-        const eventType = attr.replace(/^on/, "").toLowerCase();
-        addEvent(target, eventType, value);
+        addEvent(target, normalizeEventName(attr), value);
       }
       if (attr === "className") {
         target.setAttribute("class", value);
@@ -19,8 +19,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
   for (const attr of Object.keys(originOldProps)) {
     if (!originNewProps[attr]) {
       if (attr.startsWith("on")) {
-        const eventType = attr.replace(/^on/, "").toLowerCase();
-        removeEvent(target, eventType, originOldProps[attr]);
+        removeEvent(target, normalizeEventName(attr), originOldProps[attr]);
       }
     }
   }

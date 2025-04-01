@@ -1,3 +1,4 @@
+import { normalizeEventName } from "../utils/eventUtils";
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
@@ -27,17 +28,16 @@ export function createElement(vNode) {
 }
 
 function updateAttributes($el, props) {
-  Object.entries(props || {}).map(([attribute, value]) => {
-    if (attribute.startsWith("on")) {
-      const eventType = attribute.replace(/^on/, "").toLowerCase();
-      addEvent($el, eventType, value);
-      return;
-    }
-    if (attribute === "className") {
-      $el.setAttribute("class", value);
-      return;
-    } else {
-      $el.setAttribute(attribute, value);
+  Object.entries(props || {}).forEach(([attribute, value]) => {
+    switch (true) {
+      case attribute.startsWith("on"):
+        addEvent($el, normalizeEventName(attribute), value);
+        break;
+      case attribute === "className":
+        $el.setAttribute("class", value);
+        break;
+      default:
+        $el.setAttribute(attribute, value);
     }
   });
 }
