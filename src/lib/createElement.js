@@ -1,4 +1,4 @@
-import { normalizeEventName } from "../utils/eventUtils";
+import { isCheckStartOn, normalizeEventName } from "../utils/eventUtils";
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
@@ -30,7 +30,7 @@ export function createElement(vNode) {
 function updateAttributes($el, props) {
   Object.entries(props || {}).forEach(([attribute, value]) => {
     switch (true) {
-      case attribute.startsWith("on"):
+      case isCheckStartOn(attribute):
         addEvent($el, normalizeEventName(attribute), value);
         break;
       case attribute === "className":

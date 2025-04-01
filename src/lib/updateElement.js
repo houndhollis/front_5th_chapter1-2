@@ -1,25 +1,29 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
-import { normalizeEventName } from "../utils/eventUtils.js";
+import { isCheckStartOn, normalizeEventName } from "../utils/eventUtils.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
-  for (const [attr, value] of Object.entries(originNewProps)) {
-    if (originOldProps[attr] !== originNewProps[attr]) {
-      if (attr.startsWith("on")) {
-        addEvent(target, normalizeEventName(attr), value);
+  for (const [attribute, value] of Object.entries(originNewProps)) {
+    if (originOldProps[attribute] !== originNewProps[attribute]) {
+      if (isCheckStartOn(attribute)) {
+        addEvent(target, normalizeEventName(attribute), value);
       }
-      if (attr === "className") {
+      if (attribute === "className") {
         target.setAttribute("class", value);
         return;
       }
-      target.setAttribute(attr, value);
+      target.setAttribute(attribute, value);
     }
   }
 
-  for (const attr of Object.keys(originOldProps)) {
-    if (!originNewProps[attr]) {
-      if (attr.startsWith("on")) {
-        removeEvent(target, normalizeEventName(attr), originOldProps[attr]);
+  for (const attribute of Object.keys(originOldProps)) {
+    if (!originNewProps[attribute]) {
+      if (isCheckStartOn(attribute)) {
+        removeEvent(
+          target,
+          normalizeEventName(attribute),
+          originOldProps[attribute],
+        );
       }
     }
   }
