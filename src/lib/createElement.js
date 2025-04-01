@@ -29,7 +29,7 @@ export function createElement(vNode) {
 function updateAttributes($el, props) {
   Object.entries(props || {}).map(([attribute, value]) => {
     if (attribute.startsWith("on")) {
-      const eventType = attribute.slice(2).toLowerCase();
+      const eventType = attribute.replace(/^on/, "").toLowerCase();
       addEvent($el, eventType, value);
       return;
     }
