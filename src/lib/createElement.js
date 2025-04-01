@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
@@ -28,11 +27,17 @@ export function createElement(vNode) {
 }
 
 function updateAttributes($el, props) {
-  Object.entries(props || {}).map(([property, value]) => {
-    if (property === "className") {
+  Object.entries(props || {}).map(([attribute, value]) => {
+    if (attribute.startsWith("on")) {
+      const eventType = attribute.slice(2).toLowerCase();
+      addEvent($el, eventType, value);
+      return;
+    }
+    if (attribute === "className") {
       $el.setAttribute("class", value);
+      return;
     } else {
-      $el.setAttribute(property, value);
+      $el.setAttribute(attribute, value);
     }
   });
 }
