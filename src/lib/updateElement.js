@@ -4,14 +4,14 @@ import { isCheckStartOn, normalizeEventName } from "../utils/eventUtils.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
   for (const [attribute, value] of Object.entries(originNewProps)) {
-    if (originOldProps[attribute] !== value) {
-      if (isCheckStartOn(attribute)) {
-        addEvent(target, normalizeEventName(attribute), value);
-      } else if (attribute === "className") {
-        target.setAttribute("class", value);
-      } else {
-        target.setAttribute(attribute, value);
-      }
+    if (originOldProps[attribute] === value) continue;
+
+    if (isCheckStartOn(attribute)) {
+      addEvent(target, normalizeEventName(attribute), value);
+    } else if (attribute === "className") {
+      target.setAttribute("class", value);
+    } else {
+      target.setAttribute(attribute, value);
     }
   }
 
@@ -49,7 +49,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   if (typeof newNode === "string" || typeof oldNode === "string") {
     if (newNode !== oldNode) {
       parentElement.replaceChild(
-        document.createTextNode(newNode),
+        createElement(newNode),
         parentElement.childNodes[index],
       );
     }
@@ -57,7 +57,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
 
   updateAttributes(
-    parentElement.childNodes[index],
+    parentElement?.childNodes[index],
     newNode.props || {},
     oldNode.props || {},
   );
@@ -69,7 +69,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   for (let i = 0; i < childrenLengthMax; i++) {
     updateElement(
-      parentElement.childNodes[index],
+      parentElement?.children[index],
       newNode.children[i],
       oldNode.children[i],
       i,
