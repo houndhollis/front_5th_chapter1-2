@@ -4,26 +4,27 @@ import { isCheckStartOn, normalizeEventName } from "../utils/eventUtils.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
   for (const [attribute, value] of Object.entries(originNewProps)) {
-    if (originOldProps[attribute] !== originNewProps[attribute]) {
+    if (originOldProps[attribute] !== value) {
       if (isCheckStartOn(attribute)) {
         addEvent(target, normalizeEventName(attribute), value);
-      }
-      if (attribute === "className") {
+      } else if (attribute === "className") {
         target.setAttribute("class", value);
-        return;
+      } else {
+        target.setAttribute(attribute, value);
       }
-      target.setAttribute(attribute, value);
     }
   }
 
   for (const attribute of Object.keys(originOldProps)) {
-    if (!originNewProps[attribute]) {
+    if (!(attribute in originNewProps)) {
       if (isCheckStartOn(attribute)) {
         removeEvent(
           target,
           normalizeEventName(attribute),
           originOldProps[attribute],
         );
+      } else {
+        target.removeAttribute(attribute);
       }
     }
   }
