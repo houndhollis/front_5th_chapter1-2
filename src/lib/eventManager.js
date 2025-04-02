@@ -1,4 +1,4 @@
-const eventStore = {};
+const eventStore = new Map();
 
 export function setupEventListeners(root) {
   if (!root) return;

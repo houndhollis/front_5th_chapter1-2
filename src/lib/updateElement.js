@@ -18,11 +18,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
   for (const attribute of Object.keys(originOldProps)) {
     if (!(attribute in originNewProps)) {
       if (isCheckStartOn(attribute)) {
-        removeEvent(
-          target,
-          normalizeEventName(attribute),
-          originOldProps[attribute],
-        );
+        removeEvent(target, normalizeEventName(attribute));
       } else {
         target.removeAttribute(attribute);
       }
