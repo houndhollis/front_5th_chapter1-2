@@ -10,24 +10,26 @@ export function setupEventListeners(root) {
 
 function handleEvent(event) {
   const { type, target } = event;
-  if (eventStore[type] && eventStore[type][target]) {
-    eventStore[type][target]();
+
+  if (!eventStore[type]) return;
+
+  for (const [element, handler] of eventStore[type].entries()) {
+    if (element === target || element.contains(target)) {
+      handler(event);
+      break;
+    }
   }
 }
 
 export function addEvent(element, eventType, handler) {
   if (!eventStore[eventType]) {
-    eventStore[eventType] = {};
+    eventStore[eventType] = new Map();
   }
-  eventStore[eventType][element] = handler;
+  eventStore[eventType].set(element, handler);
 }
 
-export function removeEvent(element, eventType, handler) {
-  if (!eventStore[eventType]) {
-    return;
-  }
+export function removeEvent(element, eventType) {
+  if (!eventStore[eventType]) return;
 
-  if (eventStore[eventType][element] === handler) {
-    delete eventStore[eventType][element];
-  }
+  eventStore[eventType].delete(element);
 }
