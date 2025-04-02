@@ -4,18 +4,43 @@ import { toTimeFormat } from "../../utils/index.js";
 import { globalStore } from "../../stores";
 
 export const Post = ({
+  id,
   author,
   time,
   content,
   likeUsers,
   activationLike = false,
 }) => {
-  const { loggedIn } = globalStore.getState();
+  const { currentUser, posts, loggedIn } = globalStore.getState();
 
   const handleLikeClick = () => {
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
+      return;
     }
+
+    const newPosts = posts.map((post) => {
+      if (post.id === id) {
+        if (post.likeUsers.includes(currentUser.username)) {
+          return {
+            ...post,
+            likeUsers: post.likeUsers.filter(
+              (username) => username !== currentUser.username,
+            ),
+          };
+        } else {
+          return {
+            ...post,
+            likeUsers: [...post.likeUsers, currentUser.username],
+          };
+        }
+      }
+      return post;
+    });
+
+    globalStore.setState({
+      posts: newPosts,
+    });
   };
 
   return (
