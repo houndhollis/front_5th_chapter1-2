@@ -21,17 +21,18 @@ export const Post = ({
 
     const newPosts = posts.map((post) => {
       if (post.id === id) {
-        if (post.likeUsers.includes(currentUser.username)) {
+        const likes = post.likeUsers;
+        const currentUsername = currentUser.username;
+
+        if (likes.includes(currentUsername)) {
           return {
             ...post,
-            likeUsers: post.likeUsers.filter(
-              (username) => username !== currentUser.username,
-            ),
+            likeUsers: likes.filter((username) => username !== currentUsername),
           };
         } else {
           return {
             ...post,
-            likeUsers: [...post.likeUsers, currentUser.username],
+            likeUsers: [...likes, currentUsername],
           };
         }
       }
